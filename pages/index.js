@@ -146,16 +146,10 @@ export default function Home() {
 
           <Button
             variant="contained"
-            //disabled={!(formik.isValid && formik.dirty)}
+            disabled={!(formik.isValid && formik.dirty)}
             type="submit"
-            style={{
-              // some styles
-              ":hover": {
-                backgroundColor: "red",
-              },
-            }}
           >
-            Отправить
+            Submit
           </Button>
         </form>
       </main>
