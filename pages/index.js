@@ -1,8 +1,37 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import Head from "next/head";
+import styles from "../styles/Home.module.css";
+import React from "react";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import { useFormik } from "formik";
+import { validationsSchema } from "../utils/validationSchema";
+import axios from "axios";
 
 export default function Home() {
+  const formik = useFormik({
+    initialValues: {
+      cardNumber: "",
+      expirationDate: "",
+      cvv: "",
+      amount: "",
+    },
+    onSubmit: (values) => {
+      const valueSend = {
+        CardNumber: +values.cardNumber,
+        ExpDate: values.expirationDate,
+        Cvv: +values.cvv,
+        Amount: +values.amount,
+      };
+
+      axios
+        .post("http://localhost:3000/api/cards", {
+          ...valueSend,
+        })
+        .then((response) => console.log(response.data));
+    },
+    validationSchema: validationsSchema,
+  });
+
   return (
     <div className={styles.container}>
       <Head>
@@ -12,58 +41,118 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+        <h1 className={styles.title}>Send your card data</h1>
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+        <form onSubmit={formik.handleSubmit} className={styles.form}>
+          <div className={styles.form__itemBox}>
+            <TextField
+              InputProps={{
+                className: styles.form__item,
+              }}
+              InputLabelProps={{
+                style: {
+                  color: "white",
+                },
+              }}
+              label="Card Number"
+              id="cardNumber"
+              name="cardNumber"
+              variant="outlined"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.email}
+              fullWidth
+            />
+            {formik.errors.cardNumber && formik.touched.cardNumber && (
+              <div className={styles.form__error}>
+                {formik.errors.cardNumber}
+              </div>
+            )}
+          </div>
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+          <div className={styles.form__itemBox}>
+            <TextField
+              InputProps={{
+                className: styles.form__item,
+              }}
+              InputLabelProps={{
+                style: {
+                  color: "white",
+                },
+              }}
+              label="Expiration Date (MM-YYYY)"
+              id="expirationDate"
+              name="expirationDate"
+              variant="outlined"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.email}
+              fullWidth
+            />
+            {formik.errors.expirationDate && formik.touched.expirationDate && (
+              <div className={styles.form__error}>
+                {formik.errors.expirationDate}
+              </div>
+            )}
+          </div>
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
+          <div className={styles.form__itemBox}>
+            <TextField
+              InputProps={{
+                className: styles.form__item,
+              }}
+              InputLabelProps={{
+                style: {
+                  color: "white",
+                },
+              }}
+              label="CVV"
+              id="cvv"
+              name="cvv"
+              variant="outlined"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.email}
+              fullWidth
+            />
+            {formik.errors.cvv && formik.touched.cvv && (
+              <div className={styles.form__error}>{formik.errors.cvv}</div>
+            )}
+          </div>
 
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
+          <div className={styles.form__itemBox}>
+            <TextField
+              InputProps={{
+                className: styles.form__item,
+              }}
+              InputLabelProps={{
+                style: {
+                  color: "white",
+                },
+              }}
+              label="Amount"
+              id="amount"
+              name="amount"
+              variant="outlined"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.email}
+              fullWidth
+            />
+            {formik.errors.amount && formik.touched.amount && (
+              <div className={styles.form__error}>{formik.errors.amount}</div>
+            )}
+          </div>
+
+          <Button
+            variant="contained"
+            disabled={!(formik.isValid && formik.dirty)}
+            type="submit"
           >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
+            Submit
+          </Button>
+        </form>
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
     </div>
-  )
+  );
 }
